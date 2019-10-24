@@ -23,9 +23,9 @@ z.prop.test(p1=.33, n1=60, p0=.21, p2=NULL, n2=NULL,  alternative="two-sided", C
 ```
 
 ```{r}
-cz.prop.test<-function(p1, n1, p0, ci, p2=NULL, n2=NULL,  alternative="two-sided")
+cz.prop.test<-function(p1, n1, p0, conf.level, p2=NULL, n2=NULL,  alternative="two-sided")
 {
-if(ci == .95) {
+if(conf.level == .95) {
 return (1.96)
 } else {
 return ("sorry")
@@ -34,6 +34,23 @@ return ("sorry")
 ```
 
 ```{r}
-cz.prop.test(p1=.33, n1=60, p0=.21, ci=.95, p2=NULL, n2=NULL,  alternative="two-sided")
+cz.prop.test(p1=.33, n1=60, p0=.21, conf.level =.95, p2=NULL, n2=NULL,  alternative="two-sided")
+```
+
+```{r}
+chz.prop.test<-function(p1, n1, p0, conf.level, p2=NULL, n2=NULL,  alternative="two-sided")
+{
+if((p0 * n1)>5)  {
+return ("normal")
+} else {
+return ("sorry")
+}
+}
+```
+
+
+
+```{r}
+chz.prop.test(p1=.33, n1=60, p0=.21, conf.level =.95, p2=NULL, n2=NULL,  alternative="two-sided")
 ```
 
