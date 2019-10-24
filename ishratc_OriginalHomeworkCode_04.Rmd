@@ -1,0 +1,26 @@
+---
+title: "ishratc_OriginalHomeworkCode_04"
+author: "Ishrat Chowdhury"
+date: "October 23, 2019"
+output: html_document
+---
+
+```{r}
+z.prop.test<-function(p1, n1, p0, p2=NULL, n2=NULL,  alternative="two-sided", CI=.95)
+{
+if(p1 == 0) {
+return (0)
+} else {
+return ((p1 - p0 ) / sqrt((p0(1-p0))/n1))
+}
+}
+{
+if(p0 == 0) {
+return (0)
+} else {
+return ((p1 - p0 ) / sqrt((p0(1-p0))/n1))
+}
+}
+z.prop.test(p1=.33, n1=60, p0=.21)
+```
+
