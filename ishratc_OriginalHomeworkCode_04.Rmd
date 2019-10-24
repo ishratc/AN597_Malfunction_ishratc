@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r}
-z.prop.test<-function(p1, n1, p0, p2=NULL, n2=NULL,  alternative="two-sided", CI=.95)
+z.prop.test<-function(p1, n1, p0, CI, p2=NULL, n2=NULL,  alternative="two-sided")
 {
 if(p1 == 0) {
 return (0)
@@ -20,5 +20,20 @@ return ((p1 - p0 ) / sqrt((p0 * (1-p0))/n1))
 
 ```{r}
 z.prop.test(p1=.33, n1=60, p0=.21, p2=NULL, n2=NULL,  alternative="two-sided", CI=.95)
+```
+
+```{r}
+cz.prop.test<-function(p1, n1, p0, ci, p2=NULL, n2=NULL,  alternative="two-sided")
+{
+if(ci == .95) {
+return (1.96)
+} else {
+return ("sorry")
+}
+}
+```
+
+```{r}
+cz.prop.test(p1=.33, n1=60, p0=.21, ci=.95, p2=NULL, n2=NULL,  alternative="two-sided")
 ```
 
