@@ -42,15 +42,51 @@ chz.prop.test<-function(p1, n1, p0, conf.level, p2=NULL, n2=NULL,  alternative="
 {
 if((p0 * n1)>5)  {
 return ("normal")
-} else {
-return ("sorry")
+} else if(((1-p0) * n1)>5)  {
+return ("normal")
+}  else {
+return ("not normal")
 }
 }
 ```
-
-
 
 ```{r}
 chz.prop.test(p1=.33, n1=60, p0=.21, conf.level =.95, p2=NULL, n2=NULL,  alternative="two-sided")
 ```
+
+
+questions 2 
+
+first load the dataset
+
+```{r}
+library(curl)
+f <- curl("https://raw.githubusercontent.com/fuzzyatelin/fuzzyatelin.github.io/master/AN597_Fall19/KamilarAndCooperData.csv")
+d <- read.csv(f, header = TRUE, stringsAsFactors = FALSE)
+attach(d)
+head(d)
+```
+ make scatterplot 
+ 
+```{r}
+library(ggplot2)
+?geom_text
+?ggplot
+g<- ggplot(d, aes(Brain_Size_Species_Mean, MaxLongevity_m))
+g<-g+geom_point()
+m<-lm(MaxLongevity_m ~ Brain_Size_Species_Mean, data = d)
+m
+summary(m)
+g<-g+geom_smooth(method = "lm", formula = y ~ x)
+g
+?geom_text
+a<-signif(coef(m)[1], digits = 3)
+b<-signif(coef(m)[2], digits = 3)
+textlab <- paste("y = ",b,"x + ",a, sep="")
+textlab
+g<-g+geom_text(aes(x = 245, y = 30, label = textlab), color="black", size=5, parse = FALSE)
+g
+
+```
+ 
 
