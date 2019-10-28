@@ -4,6 +4,19 @@ author: "Ishrat Chowdhury"
 date: "October 23, 2019"
 output: html_document
 ---
+Problems:
+
+1. I could not combine my fucntions, so I currently have 3 fucntions, One creating a z stat, one for the p stat, and showing normality
+2. I was not sure how to go about getting the confidence interval, I had trouble doing this by hand so was lost.
+3. was not able to put the legend on after putting the 90% ci lines
+4. would you suggest using a test to figure out whihc model is better
+5. i think there are more ways to check if part 1 is normal
+
+
+
+1. Write a simple R function, Z.prop.test(), that can perform one-sample Z-tests for proportion data
+
+getting the z stat
 
 ```{r}
 z.prop.test<-function(p1, n1, p0, CI, p2=NULL, n2=NULL,  alternative="two-sided")
@@ -17,13 +30,14 @@ return ((p1 - p0 ) / sqrt((p0 * (1-p0))/n1))
 
 ```
 
-
 ```{r}
 z.prop.test(p1=.33, n1=60, p0=.21, p2=NULL, n2=NULL,  alternative="two-sided", CI=.95)
 ```
 
+getting the p stat
+
 ```{r}
-cz.prop.test<-function(p1, n1, p0, conf.level, p2=NULL, n2=NULL,  alternative="two-sided")
+pz.prop.test<-function(p1, n1, p0, conf.level, p2=NULL, n2=NULL,  alternative="two-sided")
 {
 if(conf.level == .95) {
 return (1.96)
@@ -34,8 +48,10 @@ return ("sorry")
 ```
 
 ```{r}
-cz.prop.test(p1=.33, n1=60, p0=.21, conf.level =.95, p2=NULL, n2=NULL,  alternative="two-sided")
+pz.prop.test(p1=.33, n1=60, p0=.21, conf.level =.95, p2=NULL, n2=NULL,  alternative="two-sided")
 ```
+
+checking for normality
 
 ```{r}
 chz.prop.test<-function(p1, n1, p0, conf.level, p2=NULL, n2=NULL,  alternative="two-sided")
@@ -54,8 +70,7 @@ return ("not normal")
 chz.prop.test(p1=.33, n1=60, p0=.21, conf.level =.95, p2=NULL, n2=NULL,  alternative="two-sided")
 ```
 
-
-questions 2 
+2. The dataset from Kamilar and Cooper has in it a large number of variables related to life history and body size. For this exercise, the end aim is to fit a simple linear regression model to predict longevity (MaxLongevity_m) measured in months from species' brain size (Brain_Size_Species_Mean) measured in grams. Do the following for both longevity~brain size and log(longevity)~log(brain size):
 
 first load the dataset
 
@@ -66,7 +81,8 @@ d <- read.csv(f, header = TRUE, stringsAsFactors = FALSE)
 attach(d)
 head(d)
 ```
- make scatterplot 
+ 
+make scatterplot 
  
 ```{r}
 library(ggplot2)
@@ -75,7 +91,7 @@ library(ggplot2)
 g<- ggplot(d, aes(Brain_Size_Species_Mean, MaxLongevity_m))
 g<-g+geom_point()
 m<-lm(MaxLongevity_m ~ Brain_Size_Species_Mean, data = d)
-m
+m #linear regression model
 summary(m)
 g<-g+geom_smooth(method = "lm", formula = y ~ x)
 g
@@ -88,5 +104,75 @@ g<-g+geom_text(aes(x = 245, y = 30, label = textlab), color="black", size=5, par
 g
 
 ```
- 
 
+the intercept is 248.95 and the slope is 1.22 (B1). The p value for this is very small and therefore significant, which is also known by the three start code. We reject the null hypothesis.
+
+compute ci for slope
+
+```{r}
+ci <- confint(m, level = 0.9)  # using the results of lm()
+ci
+al<-signif((ci)[1], digits = 3) # lower bound
+bl<-signif((ci)[2], digits = 3)
+au<-signif((ci)[3], digits = 3) # upper bound
+bu<-signif((ci)[4], digits = 3)
+g<-g+geom_abline(intercept = al, slope = bl, color="red")+geom_abline(intercept = au, slope = bu, color="red", show.legend = TRUE)
+?geom_abline
+g<-g+theme(legend.position = "bottom")
+g
+
+```
+
+point estimate
+
+```{r}
+brainweight=800
+longevity=a+b*brainweight
+longevity
+```
+
+no do it all for log
+
+```{r}
+
+d$logMaxLongevity_m <-log(d$MaxLongevity_m)
+d$logBrain_Size_Species_Mean <-log(d$MaxLongevity_m)
+
+gl<- ggplot(d, aes(logBrain_Size_Species_Mean, logMaxLongevity_m))
+gl<-gl+geom_point()
+ml<-lm(logMaxLongevity_m ~ logBrain_Size_Species_Mean, data = d)
+ml #linear regression model
+summary(ml)
+gl<-gl+geom_smooth(method = "lm", formula = y ~ x)
+gl
+?geom_text
+alog<-signif(coef(ml)[1], digits = 3)
+blog<-signif(coef(ml)[2], digits = 3)
+textlablog <- paste("y = ",blog,"x + ",alog, sep="")
+textlablog
+gl<-gl+geom_text(aes(x = 7, y = 8, label = textlablog), color="black", size=5, parse = FALSE)
+gl
+```
+
+this is definately not the right model because it is a perfect model
+
+
+```{r}
+cil <- confint(ml, level = 0.9)  # using the results of lm()
+cil
+allog<-signif((cil)[1], digits = 3) # lower bound
+bllog<-signif((cil)[2], digits = 3)
+aulog<-signif((cil)[3], digits = 3) # upper bound
+bulog<-signif((cil)[4], digits = 3)
+gl<-gl+geom_abline(intercept = allog, slope = bllog, color="red")+geom_abline(intercept = aulog, slope = bulog, color="red", show.legend = TRUE)
+gl
+
+```
+
+point estimate
+
+```{r}
+brainweightlog=800
+longevitylog=alog+blog*brainweightlog
+longevitylog
+```
